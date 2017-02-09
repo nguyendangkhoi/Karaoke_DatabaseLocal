@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.it.darkluke.karaokeapp.Model.Song;
@@ -44,22 +45,14 @@ public class AddSongDialog extends DialogFragment {
                 .setPositiveButton("Thêm",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.e(TAG, "setPositiveButton - onClick");
-
-                                if (isValidSong()) {
-                                    mAddSongListener.onPositiveAction(mSong);
-                                    dismiss();
-                                }
-
+                                //TODO nothing to do here
                             }
                         }
                 )
                 .setNegativeButton("Hủy",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.e(TAG, "setNegativeButton - onClick");
-                                dismiss();
-                                mAddSongListener.onNegativeAction();
+                                //TODO nothing to do here
                             }
                         }
                 );
@@ -79,6 +72,42 @@ public class AddSongDialog extends DialogFragment {
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        AlertDialog aD = (AlertDialog) getDialog();
+
+        if (null != aD) {
+            Button positiveButton = aD.getButton(Dialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isValidSong()) {
+                        Log.e(TAG, "isValidSong");
+                        mAddSongListener.onPositiveAction(mSong);
+                        dismiss();
+                    } else {
+                        Log.e(TAG, "isNotValidSong");
+                    }
+                }
+            });
+
+
+            Button negativeButton = aD.getButton(Dialog.BUTTON_NEGATIVE);
+            negativeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.e(TAG, "setNegativeButton - onClick");
+                    dismiss();
+                    mAddSongListener.onNegativeAction();
+                }
+            });
+
+
+        }
+    }
+
     public boolean isValidSong() {
 
         String songId = edtSongId.getText().toString();
@@ -87,7 +116,6 @@ public class AddSongDialog extends DialogFragment {
             return false;
         } else {
             edtSongId.setError(null);
-            Log.e(TAG, "songId");
             mSong.setKey(songId);
         }
 
