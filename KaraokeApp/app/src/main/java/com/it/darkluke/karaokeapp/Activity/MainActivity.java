@@ -39,12 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManagerLiked;
     private ArrayList<Song> listData = new ArrayList<>();
     private ArrayList<Song> listDataLiked = new ArrayList<>();
-    public static String DATABASE_NAME="Arirang.sqlite";
+    public static String DATABASE_NAME = "Arirang.sqlite";
     public static final String DB_PATH_SUFFIX = "/databases/";
-    public static  SQLiteDatabase database = null;
+    public static SQLiteDatabase database = null;
     TabHost tabHost;
     TabWidget tabWidget;
-
 
 
     @Override
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void addControls() {
         layoutManager = new LinearLayoutManager(this);
         layoutManagerLiked = new LinearLayoutManager(this);
@@ -75,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new SongsAdapter(listData);
         recyclerView.setAdapter(adapter);
 
-        if (listDataLiked.isEmpty()){
-            Log.e("result","sadlah");
+        if (listDataLiked.isEmpty()) {
+            Log.e("result", "sadlah");
         }
         recyclerViewLiked = (RecyclerView) findViewById(R.id.recyclerview_song_liked);
         recyclerViewLiked.setHasFixedSize(true);
@@ -90,29 +88,29 @@ public class MainActivity extends AppCompatActivity {
         tabWidget = (TabWidget) findViewById(android.R.id.tabs);
         tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
-        TabHost.TabSpec tabAllSong =  tabHost.newTabSpec("tabAllSong");
+        TabHost.TabSpec tabAllSong = tabHost.newTabSpec("tabAllSong");
         tabAllSong.setContent(R.id.tab1);
-        tabAllSong.setIndicator("",getResources().getDrawable(R.drawable.microphone));
+        tabAllSong.setIndicator("", getResources().getDrawable(R.drawable.microphone));
         tabHost.addTab(tabAllSong);
-        TabHost.TabSpec tabLikedSong =  tabHost.newTabSpec("tabLikedSong");
+        TabHost.TabSpec tabLikedSong = tabHost.newTabSpec("tabLikedSong");
         tabLikedSong.setContent(R.id.tab2);
-        tabLikedSong.setIndicator("",getResources().getDrawable(R.drawable.like));
+        tabLikedSong.setIndicator("", getResources().getDrawable(R.drawable.like));
         tabHost.addTab(tabLikedSong);
     }
 
-    private void showAllSong(){
-        database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
-        Cursor cursor = database.query("ArirangSongList",null,null,null,null,null,null);
+    private void showAllSong() {
+        database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+        Cursor cursor = database.query("ArirangSongList", null, null, null, null, null, null);
         listData.clear();
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             Song song = new Song();
             song.setKey(cursor.getString(0));
             song.setName(cursor.getString(1));
             song.setAuthor(cursor.getString(3));
-            if (cursor.getInt(5) == 0){
+            if (cursor.getInt(5) == 0) {
                 song.setLiked(false);
-            }else{
+            } else {
                 song.setLiked(true);
             }
             listData.add(song);
@@ -120,17 +118,18 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
 
     }
-    private void showLikedSong(){
-        Cursor cursor = database.query("ArirangSongList",null,"YEUTHICH=1",null,null,null,null);
+
+    private void showLikedSong() {
+        Cursor cursor = database.query("ArirangSongList", null, "YEUTHICH=1", null, null, null, null);
         listDataLiked.clear();
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             Song song = new Song();
             song.setKey(cursor.getString(0));
             song.setName(cursor.getString(1));
             song.setAuthor(cursor.getString(3));
-            if (cursor.getInt(5) == 0){
+            if (cursor.getInt(5) == 0) {
                 song.setLiked(false);
-            }else{
+            } else {
                 song.setLiked(true);
             }
             listDataLiked.add(song);
@@ -143,12 +142,12 @@ public class MainActivity extends AppCompatActivity {
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String s) {
-                if (s.equalsIgnoreCase("tabLikedSong")){
-                    Log.e("result","tabLikedSong");
+                if (s.equalsIgnoreCase("tabLikedSong")) {
+                    Log.e("result", "tabLikedSong");
                     showLikedSong();
                     adapterLiked.notifyDataSetChanged();
-                }else if (s.equalsIgnoreCase("tabAllSong")){
-                    Log.e("result","tabAllSong");
+                } else if (s.equalsIgnoreCase("tabAllSong")) {
+                    Log.e("result", "tabAllSong");
                     showAllSong();
                     adapter.notifyDataSetChanged();
                 }
@@ -159,41 +158,41 @@ public class MainActivity extends AppCompatActivity {
     private String getDatabasePath() {
         return getApplicationInfo().dataDir + DB_PATH_SUFFIX + DATABASE_NAME;
     }
-    public void CreateDataBase(){
+
+    public void CreateDataBase() {
 
 
         Log.e("result", getDatabasePath());
         File dbFile = getFileStreamPath("Arirang.db");
         File f = new File(getApplicationInfo().dataDir + DB_PATH_SUFFIX);
-        database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null,null);
-        SharedPreferences preferences = getSharedPreferences("CreatededDataBase",MODE_PRIVATE);
+        database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null, null);
+        SharedPreferences preferences = getSharedPreferences("CreatededDataBase", MODE_PRIVATE);
 
-        if (preferences.getInt("time",0) == 0) {
-            Log.e("result","database rỗng");
-            try{
+        if (preferences.getInt("time", 0) == 0) {
+            Log.e("result", "database rỗng");
+            try {
 
                 CopyDataBaseFromAsset();
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("time",1);
+                editor.putInt("time", 1);
                 editor.commit();
 
 
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
             }
-        }
-        else{
-            Log.e("result","database có dữ liệu");
+        } else {
+            Log.e("result", "database có dữ liệu");
         }
 
     }
+
     private void CopyDataBaseFromAsset() {
-        try{
+        try {
             InputStream myInput = getAssets().open(DATABASE_NAME);
             String outFileName = getDatabasePath();
             File f = new File(getApplicationInfo().dataDir + DB_PATH_SUFFIX);
-            if (!f.exists()){
+            if (!f.exists()) {
                 f.mkdir();
             }
 
@@ -209,18 +208,19 @@ public class MainActivity extends AppCompatActivity {
             myOutput.flush();
             myOutput.close();
             myInput.close();
-            Log.e("result",getDatabasePath());
+            Log.e("result", getDatabasePath());
             File dbFile = getFileStreamPath("Arirang.sqlite");
-            if (dbFile.exists()){
-                Log.e("result","Thành Công");
-            }else{
-                Log.e("result","Thôi Thua");
+            if (dbFile.exists()) {
+                Log.e("result", "Thành Công");
+            } else {
+                Log.e("result", "Thôi Thua");
             }
-        }catch (Exception e){
-            Log.e("Exception",e.toString());
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
         }
 
     }
+
     public void CreateSong(View view) {
 
     }
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_search,menu);
+        menuInflater.inflate(R.menu.menu_search, menu);
         MenuItem menuSearch = menu.findItem(R.id.menu_search);
 
         SearchView searchView = (SearchView) menuSearch.getActionView();
